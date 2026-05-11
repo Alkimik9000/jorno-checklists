@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>צ'ק ליסט עובדים – Jorno</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    header { text-align: center; padding: 30px 0 20px; }
+    header h1 { font-size: 2.2rem; color: #f5c518; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(245,197,24,0.4); }
+    header p { color: #aaa; margin-top: 6px; font-size: 0.95rem; }
+    .toc { background: rgba(255,255,255,0.05); border: 1px solid rgba(245,197,24,0.2); border-radius: 16px; padding: 24px 28px; margin: 20px 0 30px; backdrop-filter: blur(10px); }
+    .toc h2 { font-size: 1.1rem; color: #f5c518; margin-bottom: 16px; border-bottom: 1px solid rgba(245,197,24,0.3); padding-bottom: 10px; }
+    .toc-category { margin-bottom: 14px; }
+    .toc-category-title { font-size: 0.85rem; color: #f5c518; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .toc-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .toc-links a { background: rgba(245,197,24,0.1); color: #f0f0f0; text-decoration: none; padding: 6px 14px; border-radius: 20px; font-size: 0.88rem; border: 1px solid rgba(245,197,24,0.2); transition: all 0.2s; }
+    .toc-links a:hover { background: rgba(245,197,24,0.25); border-color: #f5c518; color: #f5c518; }
+    .section { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(6px); }
+    .section h2 { font-size: 1.3rem; color: #f5c518; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+    .back-to-top { display: inline-block; margin-top: 12px; font-size: 0.8rem; color: #f5c518; opacity: 0.6; text-decoration: none; cursor: pointer; }
+    .back-to-top:hover { opacity: 1; }
+    .mantra { background: rgba(245,197,24,0.07); border-right: 3px solid #f5c518; border-radius: 8px; padding: 14px 18px; margin: 16px 0 20px; color: #e0d9c0; font-size: 0.93rem; line-height: 1.7; font-style: italic; }
+    .sub-section { margin-top: 22px; }
+    .sub-section h3 { font-size: 1rem; color: #f5c518; opacity: 0.85; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(245,197,24,0.15); padding-bottom: 6px; }
+    .checklist { list-style: none; padding: 0; margin: 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.93rem; line-height: 1.5; color: #ddd; }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before { content: "☐"; color: #f5c518; font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .alert-box { background: rgba(255,68,68,0.08); border: 1px solid rgba(255,68,68,0.3); border-radius: 8px; padding: 12px 16px; margin: 12px 0; color: #ffaaaa; font-size: 0.9rem; font-weight: bold; }
+    footer { text-align: center; padding: 30px 0 10px; color: #555; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header id="top">
+    <h1>☕ Jorno</h1>
+    <p>צ'ק ליסט עובדים - המדריך לעבודה נכונה</p>
+  </header>
+
+  <div class="toc">
+    <h2>📌 תוכן עניינים</h2>
+    <div class="toc-category">
+      <div class="toc-category-title">🌅 תחילת יום</div>
+      <div class="toc-links">
+        <a href="#petikha">🔓 פתיחה</a>
+        <a href="#petikha-rishon">📅 פתיחה יום ראשון</a>
+      </div>
+    </div>
+    <div class="toc-category">
+      <div class="toc-category-title">🔄 משמרת שוטפת</div>
+      <div class="toc-links">
+        <a href="#hachlafa">🔁 החלפת משמרת</a>
+        <a href="#pas">⚡ מלאי פס</a>
+        <a href="#erev">🌙 משמרת ערב</a>
+      </div>
+    </div>
+    <div class="toc-category">
+      <div class="toc-category-title">🌙 סוף יום</div>
+      <div class="toc-links">
+        <a href="#sgira">🔒 סגירה</a>
+      </div>
+    </div>
+    <div class="toc-category">
+      <div class="toc-category-title">📆 ניהול שבועי</div>
+      <div class="toc-links">
+        <a href="#shavui">✅ משימות שבועיות לפי ימים</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- פתיחת בוקר -->
+  <div class="section" id="petikha">
+    <h2>🔓 פתיחת בוקר</h2>
+    <div class="mantra">
+      <strong>נוהל פתיחה:</strong> "משאירים את הדאגות בחוץ, עולים על מדים מלאים בסטייל, ומחייכים. אנחנו פה כדי לתת לכל לקוח יחס אישי, בוקר טוב מכל הלב וחוויה של ג'ורנו. 7:00 בבוקר - אנחנו דרוכים, מוכנים ונקיים."
+    </div>
+    <div class="sub-section">
+      <h3>🏠 חלל החנות והתצוגה</h3>
+      <ul class="checklist">
+        <li>סידור לחמים ובאגטים לפי סוגים (מראה שופע ומסודר).</li>
+        <li>ארגון מאפים בויטרינת התצוגה.</li>
+        <li>שילוט מלא: מאפים, לחמים, כריכים, סלטים, מוזלי והשולחן העגול.</li>
+        <li>הדלקת תאורה בויטרינות המכירה.</li>
+        <li>וידוא רצפה נקייה ומזמינה בכל שטח החנות.</li>
+        <li>ניקיון יסודי של קו הקופה.</li>
+        <li>למלא עוגיות ומאפינס בקו קופות.</li>
+        <li>סידור, צמצום ורענון: קיר עוגיות, שולחן עגול ופרחים.</li>
+        <li>הדלקת מוזיקת אווירה (בתוך החנות וברחבה החיצונית).</li>
+        <li>בדיקת טעינה לאייפדים וחיבור תקין של הסולקים.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>☕ עמדת בריסטה (מכונת קפה)</h3>
+      <ul class="checklist">
+        <li>פריקת לחץ והזרמת מים ("הורדת מנות") בכל ראשים.</li>
+        <li>הכנת מטלית סטימר (חתוכה לחצי) לניקוי קבוע של צינור האדים.</li>
+        <li>הרכבה ותפעול של המילקיט.</li>
+        <li>מילוי פולי קפה טריים במטחנה וארגון סביבת העבודה.</li>
+        <li>בדיקת מלאים: סוכר, מכסים, מי סוכר, שוקו, פרלינים, נענע ולימון.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🌊 הרחבה החיצונית</h3>
+      <ul class="checklist">
+        <li>סידור שולחנות וכסאות: בשטח הרחבה - 2 כסאות פונים לים, כסא אחד הופכי.</li>
+        <li>צמידות לפרגולה: 2 כסאות ניצבים לפרגולה אחד מול השני.</li>
+        <li>פתיחת שמשיות במידת הצורך (לפי מזג אוויר).</li>
+        <li>ניקוי שולחנות עם תרסיס ייעודי ומגבון.</li>
+        <li>בדיקה וריקון אשפה מאדניות הפרחים.</li>
+        <li>טיטוא יסודי של כל שטח הרחבה.</li>
+        <li>הצבת מאפרות נקיות על השולחנות.</li>
+      </ul>
+    </div>
+    <div class="mantra" style="border-right-color: #ff4444; background: rgba(255,68,68,0.05); margin-top: 20px;">
+      <strong>דגשים קריטיים ל-7:00:</strong> בשעת הפתיחה הסחורה ליד המחסן בלבד. אין להשאיר עגלות/ארגזים בפס (גם אם לא סיימתם לסדר). הכל חוזר למטבח.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- פתיחה יום ראשון -->
+  <div class="section" id="petikha-rishon">
+    <h2>📅 פתיחה יום ראשון</h2>
+    <div class="mantra">
+      יום ראשון הוא הפנים של השבוע. הלקוחות שלנו מגיעים אחרי סוף שבוע - הם מצפים לחנות שנראית כאילו נפתחה עכשיו לראשונה. ניקיון עמוק, תצוגה מלאה ואנרגיה טרייה. זה לא יום רגיל - זה יום ראשון.
+    </div>
+    <div class="sub-section">
+      <h3>🌸 ניקיון עמוק - ויטרינות ותצוגה</h3>
+      <ul class="checklist">
+        <li>הוצאת כל הפטיסרי והמקרונים מהויטרינה לצורך ניקיון יסודי.</li>
+        <li>ניקיון יסודי של ויטרינת הפטיסרי: דלתות זכוכית, מדפים פנימיים וחוץ.</li>
+        <li>ניקיון כלי תצוגה (מרנג, פעמון ריבות).</li>
+        <li>ניקיון ואיפוס מקפיא המוסים - סידור מחדש לאחר הניקוי.</li>
+        <li>החזרת הפטיסרי והמקרונים לויטרינה בסידור מלא ומזמין.</li>
+        <li>וידוא שמרנגים ומקרונים מלאים ומסודרים לפי סוגים.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🧹 ניקיון אבק ומשטחים</h3>
+      <ul class="checklist">
+        <li>ניקוי אבק יסודי מבקבוקי היין ומדפי היין.</li>
+        <li>ניקוי אבק מהשולחן העגול ומסביבתו.</li>
+        <li>ניקוי יסודי של עמדת הקופה - משטחים, מסכים וסביבה.</li>
+        <li>ניקוי אבק מעל ויטרינת הפטיסרי.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🌺 פרחים ואווירה</h3>
+      <ul class="checklist">
+        <li>החלפת מים באגרטלים בכל החנות.</li>
+        <li>צמצום והורדה לפחת של פרחים שנראים עייפים - רק פרחים טריים ומזמינים נשארים.</li>
+        <li>סידור מחדש של הפרחים לאחר ההחלפה.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🥐 מטבח ואפייה</h3>
+      <ul class="checklist">
+        <li>מעבר תוקף על כל מוצרי החנות - הוצאת מה שפג תוקפו.</li>
+        <li>הפשרת בחושות / בראוניז / בייגל במידת הצורך.</li>
+        <li>אפיית שטרודלים במידת הצורך לפי מלאי.</li>
+        <li>ארגון קיר העוגיות - מלא, מסודר ומושך.</li>
+      </ul>
+    </div>
+    <div class="mantra" style="border-right-color: #a78bfa; background: rgba(167,139,250,0.07); margin-top: 20px;">
+      💜 <strong>תזכורת:</strong> יום ראשון הוא ההזדמנות שלנו לאפס את השבוע. חנות נקייה, מסודרת ומלאה - זה לא רק אסתטיקה, זה הכבוד שאנחנו נותנים לעצמנו ולאנשים שבוחרים לבוא אלינו.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- החלפת משמרת -->
+  <div class="section" id="hachlafa">
+    <h2>🔁 החלפת משמרת</h2>
+    <div class="mantra">
+      החלפת משמרת היא לא רק מעבר - זו הזדמנות לאפס, לסדר ולמסור חנות נקייה ומוכנה. המשמרת הבאה מתחילה מאיפה שאתם מסיימים.
+    </div>
+    <div class="sub-section">
+      <h3>🌊 ניקיון וסידור הרחבה החיצונית</h3>
+      <ul class="checklist">
+        <li>טאטוא יסודי של כל שטח הרחבה ואיסוף לכלוך גס.</li>
+        <li>ניקוי יסודי של כל השולחנות עם תרסיס ומגבון.</li>
+        <li>סידור שולחנות וכסאות: 2 כסאות פונים לים + כסא אחד הופכי בכל שולחן.</li>
+        <li>החלפת שקיות בכל הפחים ברחבה.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🏠 חנות ופס</h3>
+      <ul class="checklist">
+        <li>טיטוא וסמרטוט בפס ובכל שטח החנות.</li>
+        <li>ניקיון ומילוי עמדת סוכרים ומכסים.</li>
+        <li>מילוי מקרר שתייה.</li>
+        <li>מעבר על מלאי הפס והשלמת חוסרים - <a href="#pas" style="color:#f5c518;">ראו צ'ק ליסט מלאי פס ⚡</a>.</li>
+        <li>צמצום מאפים ומגשים במטבח - <u>רוב האפייה מאורגנת בויטרינה.</u></li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>📦 מחסן וסדר כללי</h3>
+      <ul class="checklist">
+        <li>סידור המחסן: רצפה פנויה לחלוטין מסחורה וקרטונים.</li>
+        <li>אביזרים אישיים מאורגנים במקומם.</li>
+        <li>אין חפצים שחוסמים גישה - הכל נגיש ומסודר.</li>
+      </ul>
+      <div class="alert-box">
+        🚨 מחליפים בגדים במחסן בלבד. כביסה מלוכלת - לסל כביסה בלבד!
+      </div>
+    </div>
+    <div class="sub-section">
+      <h3>☕ איפוס עמדת בריסטה (בריסטה משמרת בוקר)</h3>
+      <ul class="checklist">
+        <li>ניקיון יסודי של כל עמדת הקפה.</li>
+        <li>שפריצר על מכונת הקפה החיצונית ועל המקרר החיצוני.</li>
+        <li>ניקוי פח עמדה עם שפריצר.</li>
+        <li>שטיפת קנקנים.</li>
+        <li>הוצאת מנשאים לדלפק.</li>
+        <li>מילוי כוסות לכל הגדלים.</li>
+        <li>מילוי מי סוכר - גם בעמדת הלקוחות וגם במקרר.</li>
+        <li>מילוי שוקו, פרלינים וחבקים.</li>
+        <li>סידור עמדת תיונים.</li>
+        <li>ארגון המדף ופולי הקפה.</li>
+      </ul>
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- מלאי פס -->
+  <div class="section" id="pas">
+    <h2>⚡ מלאי פס - מה עושים כשיש זמן</h2>
+    <div class="mantra">
+      כשאין תור - זה הזמן לעלות רמה. הפס הוא קו החזית של החנות, וכל חוסר קטן מורגש מיד בשירות. המטרה היא פשוטה: שהעמדה תישאר מלאה, נקייה, שופעת ומוכנה לעבודה רציפה - בלי לחכות לרגע של לחץ.
+    </div>
+    <div class="sub-section">
+      <h3>🧻 אריזות, כלים ועמדות שירות</h3>
+      <ul class="checklist">
+        <li>מילוי מפיות ב-4 נקודות קבועות: 2 בצידי הקופות, ליד הצלחות וליד הבריסטה.</li>
+        <li>בדיקת מלאי 4 סוגי השקיות - השלמה וסידור לפי הסוגים.</li>
+        <li>מילוי שני סוגי הצלחות ועמדת הכפפות - נקי, מסודר וזמין לעבודה.</li>
+        <li>מילוי כוסות שקופות משני הסוגים - לא משאירים חוסר בעמדה.</li>
+        <li>מילוי קופסאות כפול 4 - מסודרות, פתוחות ונגישות לשליפה מהירה.</li>
+        <li>בדיקת מגשים - ניקוי, סידור והנחת תחתיות נייר לפי הצורך.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🍬 עמדת לקוח וקו קופה</h3>
+      <ul class="checklist">
+        <li>איפוס והחלפת הפס לפי הצורך - העמדה נשארת נקייה, נעימה ומוכנה לשירות.</li>
+        <li>ניקוי יסודי של עמדת הסוכר - משטח, כלים וסביבת העבודה.</li>
+        <li>מילוי מלאי סוכר באופן מסודר - לא מחכים לחוסר.</li>
+        <li>מילוי וסידור סכו"ם ללקוחות בעמדה.</li>
+        <li>בדיקת סכו"ם במגירה - השלמה, סדר ונגישות.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🥐 ויטרינות ותצוגה</h3>
+      <ul class="checklist">
+        <li>מעבר על ויטרינת המאפים - ניקיון, סדר, שפע ומראה מלא לאורך כל המשמרת.</li>
+        <li>דגש על מילוי הפעמונים בקומה העליונה - שלא ייראו ריקים.</li>
+        <li>מעבר על ויטרינת הפטיסרי - ניקיון חזית, סדר תצוגה ומילוי לפי הצורך.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🥪 קירור והשלמות</h3>
+      <ul class="checklist">
+        <li>בדיקת מלאי הכריכים במקרר - השלמה, סידור ומראה מסודר ללקוח.</li>
+        <li>בדיקת מלאי הקרח - לא משאירים את הבריסטה והפס בלי גיבוי.</li>
+      </ul>
+    </div>
+    <div class="mantra" style="border-right-color: #22c55e; background: rgba(34,197,94,0.07); margin-top: 20px; font-style: normal;">
+      ✅ <strong>כלל עבודה:</strong> אם אין כרגע לקוח - עוברים על מלאי פס. שתי דקות של סדר עכשיו חוסכות לחץ, חוסרים ובלאגן אחר כך.
+    </div>
+    <div class="mantra" style="border-right-color: #a78bfa; background: rgba(167,139,250,0.07); margin-top: 12px; font-style: normal;">
+      💜 <strong>זכרו:</strong> פס מלא ומסודר משדר מקצועיות, מרגיע את הצוות ומשפר את חוויית הלקוח עוד לפני שנאמרה מילה אחת.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- משמרת ערב -->
+  <div class="section" id="erev">
+    <h2>🌙 מטלות משמרת ערב</h2>
+    <div class="mantra">
+      משמרת הערב היא הגב של המחרת. מה שתסדרו עכשיו - יחסוך זמן, לחץ ואנרגיה לצוות הבוקר. תסיימו את המשמרת עם חנות שמוכנה לפתיחה הבאה.
+    </div>
+    <ul class="checklist">
+      <li>ניקיון יסודי של מגשי אפייה.</li>
+      <li>מילוי מקרונים וכדורי שוקולד - ויטרינה מלאה ומסודרת לסוף היום.</li>
+      <li>בדיקת תוקף מוצרים בכל הויטרינות - הורדת מוצר באישור מנהל.ת החנות בלבד.</li>
+      <li>מילוי ואיפוס עמדת קופסאות אישי - מלאי מסודר ונגיש לפי <a href="#pas" style="color:#f5c518;">צ'ק ליסט מלאי פס ⚡</a>.</li>
+      <li>מילוי ואיפוס עמדת קופסאות משפחתי וקופסאות פסים.</li>
+      <li>מילוי דבש וסילאן - בדיקת מפלס ומילוי לפי הצורך.</li>
+      <li>סידור וארגון ארון הבריסטה - הכל במקומו, נגיש ומסודר.</li>
+      <li>מילוי תיונים וחבקים לפי מלאי.</li>
+      <li>השלמת תפוזים לפי הצורך.</li>
+      <li>ארגון ושטיפת המחסן - רצפה פנויה, קרטונים מסודרים, גישה חופשית.</li>
+      <li>איזור ביגוד מסודר - בגדים תלויים, אין פריטים זרוקים.</li>
+    </ul>
+    <div class="alert-box">
+      🚨 כביסה מלוכלת - לסל כביסה בלבד!
+    </div>
+    <div class="mantra" style="border-right-color: #f97316; background: rgba(249,115,22,0.07); margin-top: 20px; font-style: normal;">
+      🎯 <strong>לאחמ"ש:</strong> לפני סיום המשמרת - לוודא שכל המטלות הושלמו ולעבור על <a href="#sgira" style="color:#f5c518;">צ'ק ליסט סגירה 🔒</a>. אתם האחרונים שיוצאים - תוודאו שהחנות מוכנה.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- סגירה -->
+  <div class="section" id="sgira">
+    <h2>🔒 סגירה</h2>
+    <div class="mantra">
+      הסגירה היא החתימה שלנו על היום. חנות שנסגרת נכון - נפתחת נכון. כל פרט שתטפלו בו עכשיו חוסך זמן, לחץ ואנרגיה לצוות הבוקר. תסיימו בגאווה.
+    </div>
+    <div class="sub-section">
+      <h3>🍞 סגירת תצוגת לחמים</h3>
+      <ul class="checklist">
+        <li>הוצאת כל השקיות מהתצוגה, ניקוי יסודי והחזרתן למקום.</li>
+        <li>ניקוי מראות, שיש ואזור מאחורי התנור.</li>
+        <li>ניקוי כיור וארון הכיור - כולל סידור פנימי.</li>
+        <li>ניקוי יסודי של הרשתות והמגירה של הטוסטר.</li>
+        <li>ניקיון שלושת תעלות הביוב בחנות.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🥐 סגירת ויטרינת מאפים</h3>
+      <ul class="checklist">
+        <li>לאחר הסגירה ב-21:00 - הקלדה בשולחן 2000 בטאבלט והדפסה באישור אחמ"ש בלבד.</li>
+        <li>אריזת שאריות מאפים וסנדוויצ'ים לתרומות / עובדים - <strong>בקרטונים בלבד</strong>. מה נשמר: מאפינס, עוגיות, בראוניז, קישים, דודים - לוודא עם אחמ"ש.</li>
+        <li>ניקוי יסודי של כל הכלים והחזרתם למקומם לאחר הניקוי.</li>
+        <li>ניקוי פנימי וחיצוני של הויטרינה עם שפריצר וכיבוי תאורה.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🍰 סגירת ויטרינת פטיסרי</h3>
+      <ul class="checklist">
+        <li>ניקוי פנימי וחיצוני יסודי של הויטרינה.</li>
+        <li>מילוי כדורי שוקולד ומקרונים לפתיחת הבוקר.</li>
+        <li>האחמ"ש בודק: איזה פטיסרי יורד, מה נשאר - מה שנשאר מצומצם ומסודר ימינה.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>☕ סגירת מכונת קפה</h3>
+      <ul class="checklist">
+        <li>פירוק ושטיפת הראשים - השארתם בקופסת 4 ליטר עם חצי כף אבקה.</li>
+        <li>ראש 0: כפית אבקה על כל הראשים ופמפום.</li>
+        <li>2 סבבי שטיפה למילקיט: סבב ראשון עם טבליה, סבב שני בלי - מים רותחים בשניהם.</li>
+        <li>שטיפת כל כלי הקפה: כדים, כפות, כפיות, כלי ריקון הקפה ורשת.</li>
+        <li>ניקוי יסודי של כל העמדה עם שפריצר: מכונה, שיש, מראות, קיר ומקררים.</li>
+        <li>כד עם חומר כחול ומים - לכל אחד מהסטימרים.</li>
+        <li>וידוא מלאי לפתיחת בוקר: מי סוכר, מי שוקו ותחליפי חלב מספיקים.</li>
+        <li>מילוי כוסות, מכסים, סוכרים וקשיות בעמדה.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🌊 סגירת הפרגולה</h3>
+      <ul class="checklist">
+        <li>טיטוא פנים הפרגולה.</li>
+        <li>סידור כסאות: 2 לכיוון הים ואחד מולם, שולחנות נקיים.</li>
+        <li>נעילת הפרגולה באמצעות המפתחות והחזרת המפתח למגירה בפס.</li>
+      </ul>
+    </div>
+    <div class="mantra" style="border-right-color: #22c55e; background: rgba(34,197,94,0.07); margin-top: 20px; font-style: normal;">
+      ✅ <strong>לאחמ"ש - בדיקת סגירה סופית:</strong> לפני שכולם יוצאים - לסרוק את החנות מקצה לקצה. ויטרינות כבויות, מכונת קפה מטופלת, ניקיון הושלם, דלתות נעולות. <strong>אתם האחרונים - תוודאו שהכל בסדר.</strong>
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- משימות שבועיות -->
+  <div class="section" id="shavui">
+    <h2>✅ משימות שבועיות לפי ימים</h2>
+    <div class="mantra">
+      חנות נקייה ומסודרת לא קורית במקרה - היא קורית כי כל אחד מאיתנו לוקח אחריות על המשימה שלו ביום שלו. המשימות השבועיות הן לא "אקסטרה" - הן חלק בלתי נפרד מהמשמרת. כשכולם עושים את חלקם, הכל זורם.
+    </div>
+
+    <style>
+      .weekly-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 8px; }
+      .day-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(245,197,24,0.15); border-radius: 12px; overflow: hidden; }
+      .day-header { background: rgba(245,197,24,0.1); padding: 10px 16px; font-weight: bold; font-size: 1rem; color: #f5c518; display: flex; align-items: center; gap: 8px; }
+      .day-shifts { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+      .shift-block { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.05); }
+      .shift-block:first-child { border-left: 1px solid rgba(255,255,255,0.05); }
+      .shift-label { font-size: 0.78rem; color: #f5c518; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+      .shift-empty { color: #555; font-size: 0.85rem; font-style: italic; }
+      .day-link-note { padding: 10px 16px 14px; font-size: 0.82rem; color: #a78bfa; border-top: 1px solid rgba(255,255,255,0.05); }
+      .day-link-note a { color: #f5c518; }
+      @media (max-width: 500px) {
+        .day-shifts { grid-template-columns: 1fr; }
+        .shift-block:first-child { border-left: none; border-bottom: 1px solid rgba(255,255,255,0.05); }
+      }
+    </style>
+
+    <div class="weekly-grid">
+      <div class="day-card">
+        <div class="day-header">📅 יום ראשון</div>
+        <div class="day-shifts">
+          <div class="shift-block">
+            <div class="shift-label">🌅 בוקר</div>
+            <ul class="checklist"><li>ניקוי וסידור ארונות הפס - הכל מסודר, נגיש ומוכן לשירות.</li></ul>
+          </div>
+          <div class="shift-block">
+            <div class="shift-label">🌙 ערב</div>
+            <ul class="checklist">
+              <li>ניקוי יסודי פנימי וחיצוני של ויטרינת הפטיסרי.</li>
+              <li>החלפת מים בכל האגרטלים בחנות.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="day-link-note">💡 ראו גם: <a href="#petikha-rishon">📅 פתיחה יום ראשון</a> - ניקיון עמוק, פרחים ואפייה מפורטים שם.</div>
+      </div>
+      <div class="day-card">
+        <div class="day-header">📅 יום שני</div>
+        <div class="day-shifts">
+          <div class="shift-block">
+            <div class="shift-label">🌅 בוקר</div>
+            <ul class="checklist"><li>ניקוי וסידור מדפי קיר העוגיות - מסודר, מלא ומזמין.</li></ul>
+          </div>
+          <div class="shift-block">
+            <div class="shift-label">🌙 ערב</div>
+            <ul class="checklist">
+              <li>ניקוי מראות עליונות בכל החנות.</li>
+              <li>ניקוי חיצוני ופנימי של כל המקררים.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-header">📅 יום שלישי</div>
+        <div class="day-shifts">
+          <div class="shift-block">
+            <div class="shift-label">🌅 בוקר</div>
+            <ul class="checklist"><li>ניקוי יסודי של שולחן התצוגה - משטח, רגליים וסביבה.</li></ul>
+          </div>
+          <div class="shift-block">
+            <div class="shift-label">🌙 ערב</div>
+            <ul class="checklist">
+              <li>ניקוי וסידור ארונות הפס - הכל במקומו לפתיחת הבוקר.</li>
+              <li>החלפת מים בכל האגרטלים בחנות.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-header">📅 יום רביעי</div>
+        <div class="day-shifts">
+          <div class="shift-block">
+            <div class="shift-label">🌅 בוקר</div>
+            <div class="shift-empty">אין משימה שבועית ייעודית - שמרו על שגרת הפתיחה הרגילה.</div>
+          </div>
+          <div class="shift-block">
+            <div class="shift-label">🌙 ערב</div>
+            <ul class="checklist">
+              <li>ניקוי וסידור מדפי קיר העוגיות.</li>
+              <li>ניקוי יסודי של מקרר הפס - פנים וחוץ.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-header">📅 יום חמישי</div>
+        <div class="day-shifts">
+          <div class="shift-block">
+            <div class="shift-label">🌅 בוקר</div>
+            <ul class="checklist"><li>קיפול קופסאות פטיסרי - מלאי מסודר ומוכן לסוף השבוע.</li></ul>
+          </div>
+          <div class="shift-block">
+            <div class="shift-label">🌙 ערב</div>
+            <ul class="checklist">
+              <li>קיפול קופסאות פטיסרי - השלמת מלאי לסוף השבוע.</li>
+              <li>ניקוי מראות עליונות בכל החנות.</li>
+              <li>ניקוי יסודי פנימי וחיצוני של ויטרינת הפטיסרי.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-header">📅 יום שישי</div>
+        <div class="day-shifts">
+          <div class="shift-block">
+            <div class="shift-label">🌅 בוקר</div>
+            <div class="shift-empty">אין משימה שבועית ייעודית - שמרו על שגרת הפתיחה הרגילה.</div>
+          </div>
+          <div class="shift-block">
+            <div class="shift-label">🌙 ערב</div>
+            <div class="shift-empty">אין משימה שבועית ייעודית - שמרו על שגרת הסגירה הרגילה.</div>
+          </div>
+        </div>
+      </div>
+      <div class="day-card">
+        <div class="day-header">📅 שבת</div>
+        <div class="day-shifts">
+          <div class="shift-block">
+            <div class="shift-label">🌅 בוקר</div>
+            <div class="shift-empty">אין משימה שבועית ייעודית - שמרו על שגרת הפתיחה הרגילה.</div>
+          </div>
+          <div class="shift-block">
+            <div class="shift-label">🌙 ערב</div>
+            <ul class="checklist"><li>ניקוי יסודי של שולחן התצוגה - סיום שבוע נקי ומסודר.</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mantra" style="border-right-color: #22c55e; background: rgba(34,197,94,0.07); margin-top: 24px; font-style: normal;">
+      ✅ <strong>לאחמ"ש:</strong> בסיום כל משמרת - לוודא שהמשימה השבועית של אותו יום בוצעה לפני שחרור הצוות. זה לא אופציונלי.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <footer>Jorno © 2025 - לשימוש פנימי בלבד</footer>
+</div>
+</body>
+</html>
