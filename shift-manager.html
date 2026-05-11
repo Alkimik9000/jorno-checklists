@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>צ'ק ליסט אחמ"שים – Jorno</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    header { text-align: center; padding: 30px 0 20px; }
+    header h1 { font-size: 2.2rem; color: #f5c518; letter-spacing: 2px; text-shadow: 0 2px 10px rgba(245,197,24,0.4); }
+    header p { color: #aaa; margin-top: 6px; font-size: 0.95rem; }
+    .toc { background: rgba(255,255,255,0.05); border: 1px solid rgba(245,197,24,0.2); border-radius: 16px; padding: 24px 28px; margin: 20px 0 30px; backdrop-filter: blur(10px); }
+    .toc h2 { font-size: 1.1rem; color: #f5c518; margin-bottom: 16px; border-bottom: 1px solid rgba(245,197,24,0.3); padding-bottom: 10px; }
+    .toc-category { margin-bottom: 14px; }
+    .toc-category-title { font-size: 0.85rem; color: #f5c518; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .toc-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .toc-links a { background: rgba(245,197,24,0.1); color: #f0f0f0; text-decoration: none; padding: 6px 14px; border-radius: 20px; font-size: 0.88rem; border: 1px solid rgba(245,197,24,0.2); transition: all 0.2s; }
+    .toc-links a:hover { background: rgba(245,197,24,0.25); border-color: #f5c518; color: #f5c518; }
+    .section { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 24px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(6px); }
+    .section h2 { font-size: 1.3rem; color: #f5c518; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+    .back-to-top { display: inline-block; margin-top: 12px; font-size: 0.8rem; color: #f5c518; opacity: 0.6; text-decoration: none; cursor: pointer; }
+    .back-to-top:hover { opacity: 1; }
+    .mantra { background: rgba(245,197,24,0.07); border-right: 3px solid #f5c518; border-radius: 8px; padding: 14px 18px; margin: 16px 0 20px; color: #e0d9c0; font-size: 0.93rem; line-height: 1.7; font-style: italic; }
+    .sub-section { margin-top: 22px; }
+    .sub-section h3 { font-size: 1rem; color: #f5c518; opacity: 0.85; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid rgba(245,197,24,0.15); padding-bottom: 6px; }
+    .checklist { list-style: none; padding: 0; margin: 0; }
+    .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.93rem; line-height: 1.5; color: #ddd; }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist li::before { content: "☐"; color: #f5c518; font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+    .alert-box { background: rgba(255,68,68,0.08); border: 1px solid rgba(255,68,68,0.3); border-radius: 8px; padding: 12px 16px; margin: 12px 0; color: #ffaaaa; font-size: 0.9rem; font-weight: bold; }
+    .cleaning-week-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-top: 8px; }
+    .cleaning-day-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(245,197,24,0.15); border-radius: 12px; overflow: hidden; }
+    .cleaning-day-header { background: rgba(245,197,24,0.1); padding: 10px 16px; font-weight: bold; font-size: 0.95rem; color: #f5c518; display: flex; align-items: center; gap: 8px; }
+    .cleaning-day-body { padding: 14px 16px; }
+    .cleaning-tag { display: inline-block; background: rgba(245,197,24,0.12); color: #f5c518; font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; margin-bottom: 10px; border: 1px solid rgba(245,197,24,0.2); }
+    .monthly-grid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-top: 8px; }
+    .monthly-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(167,139,250,0.25); border-radius: 12px; overflow: hidden; }
+    .monthly-card-header { background: rgba(167,139,250,0.1); padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+    .monthly-card-header .month-badge { background: rgba(167,139,250,0.2); color: #a78bfa; font-size: 0.78rem; padding: 3px 10px; border-radius: 10px; border: 1px solid rgba(167,139,250,0.3); white-space: nowrap; }
+    .monthly-card-header .month-title { font-weight: bold; color: #e0d9c0; font-size: 0.95rem; }
+    .monthly-card-body { padding: 14px 16px; }
+    .training-steps { display: grid; grid-template-columns: 1fr; gap: 20px; margin-top: 8px; }
+    .training-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(245,197,24,0.18); border-radius: 14px; overflow: hidden; }
+    .training-card-header { background: rgba(245,197,24,0.1); padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
+    .training-step-num { background: #f5c518; color: #1a1a2e; font-weight: bold; font-size: 1rem; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .training-card-title { font-weight: bold; color: #f5c518; font-size: 1rem; }
+    .training-card-subtitle { font-size: 0.8rem; color: #aaa; margin-top: 2px; }
+    .training-card-body { padding: 16px 18px; }
+    .training-note { background: rgba(245,197,24,0.06); border: 1px dashed rgba(245,197,24,0.25); border-radius: 8px; padding: 12px 16px; margin-top: 14px; font-size: 0.88rem; color: #e0d9c0; line-height: 1.6; }
+    .feedback-box { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.2); border-radius: 10px; padding: 16px 18px; margin-top: 20px; }
+    .feedback-box h3 { color: #22c55e; font-size: 0.95rem; margin-bottom: 10px; }
+    .feedback-lines { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+    .feedback-line { border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 6px; font-size: 0.85rem; color: #888; }
+    footer { text-align: center; padding: 30px 0 10px; color: #555; font-size: 0.8rem; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header id="top">
+    <h1>☕ Jorno</h1>
+    <p>צ'ק ליסט אחמ"שים - ניהול, ניקיון והכשרה</p>
+  </header>
+
+  <div class="toc">
+    <h2>📌 תוכן עניינים</h2>
+    <div class="toc-category">
+      <div class="toc-category-title">🎯 ניהול משמרת</div>
+      <div class="toc-links">
+        <a href="#achmash">🎯 ניהול משמרת (אחמ"ש)</a>
+        <a href="#iumos">🚀 תיעדוף בזמן עומס</a>
+      </div>
+    </div>
+    <div class="toc-category">
+      <div class="toc-category-title">🧹 עובד ניקיון</div>
+      <div class="toc-links">
+        <a href="#nikuyon-yomi">🧽 משימות יומיות</a>
+        <a href="#nikuyon-shavui">🗓 משימות שבועיות</a>
+        <a href="#nikuyon-hodshi">📅 משימות חודשיות</a>
+      </div>
+    </div>
+    <div class="toc-category">
+      <div class="toc-category-title">⭐ סטנדרטים</div>
+      <div class="toc-links">
+        <a href="#nahagim">📋 נהלים וכללי התנהגות</a>
+        <a href="#service">💛 שירות לקוחות</a>
+      </div>
+    </div>
+    <div class="toc-category">
+      <div class="toc-category-title">📈 הכשרה</div>
+      <div class="toc-links">
+        <a href="#mitlmadim">🧑‍💼 מתלמדים לאחמ"ש</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ניהול משמרת -->
+  <div class="section" id="achmash">
+    <h2>🎯 ניהול משמרת (אחמ"ש)</h2>
+    <div class="mantra">
+      אחמ"ש טוב לא רק מנהל משמרת - הוא מחזיק את האנרגיה של החנות. הוא רואה קדימה, שומר על הסטנדרט, מחבר בין האנשים ודואג שהלקוח ירגיש שהכל זורם גם כשמאחורי הקלעים יש עומס. מנהלים ברוגע, בנוכחות ובדוגמה אישית.
+    </div>
+    <div class="sub-section">
+      <h3>🕘 לפני תחילת המשמרת</h3>
+      <ul class="checklist">
+        <li>לבצע סריקה מהירה של החנות: ניקיון, ויטרינות, רחבה, קופה, בריסטה ופס.</li>
+        <li>לוודא שהצוות על העמדות, מתודרך ומבין את חלוקת התפקידים למשמרת.</li>
+        <li>לבדוק חוסרים קריטיים ולתעדף השלמות לפני שהחנות נכנסת לקצב.</li>
+        <li>לשים דגש על עמדות רגישות לפתיחה: קופה, מלאי פס, בריסטה ותצוגות.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>👀 ניהול רצפת המכירה לאורך המשמרת</h3>
+      <ul class="checklist">
+        <li>להיות בתנועה מתמדת בין הרחבה, הקופה, הויטרינות והפס - לא לנהל ממקום אחד בלבד.</li>
+        <li>לזהות עומס לפני שהוא מתפוצץ ולהקדים שיבוץ, תגבור או שינוי תפקידים.</li>
+        <li>לשמור על חנות שופעת, מסודרת ומזמינה - גם באמצע משמרת פעילה.</li>
+        <li>לוודא שמלאי בסיסי זמין בכל רגע: מפיות, שקיות, קופסאות, סכו"ם, מאפים וכריכים.</li>
+        <li>לעצור חוסר סדר בזמן אמת - לא מחכים לסוף משמרת כדי לתקן.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🧑‍🤝‍🧑 ניהול צוות ותקשורת</h3>
+      <ul class="checklist">
+        <li>לתדרך קצר וברור: מי על קופה, מי מחזיק רחבה, מי אחראי פס, מי נותן גיבוי לבריסטה.</li>
+        <li>לתת הוראות קצרות, ברורות ומכבדות - בלי עומס מיותר ובלי לייצר לחץ מיותר.</li>
+        <li>להעיר על סדר, לבוש, שפה והתנהלות בצורה מיידית ומכבדת.</li>
+        <li>לשים לב מי צריך עזרה, מי נחלש ומי יכול להרים קצב - ולהזיז בהתאם.</li>
+        <li>להוביל בדוגמה אישית: שירות, ניקיון, סדר, טון דיבור ונוכחות בחנות.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>📦 בקרה על מלאי, תצוגה ואיכות</h3>
+      <ul class="checklist">
+        <li>לבצע מעברי תוקף יזומים במהלך המשמרת באזורים רגישים.</li>
+        <li>לוודא שהויטרינות נראות מלאות, נקיות ומדויקות - לא רק "יש מוצר", אלא שיש תצוגה.</li>
+        <li>לבדוק שמקרר הכריכים, קיר העוגיות והשולחן העגול נשארים מסודרים לאורך היום.</li>
+        <li>להפנות עובדים לזמני ביניים: מלאי פס, ניקיון קל, סידור קופה או השלמות.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🚀 קבלת החלטות בזמן עומס</h3>
+      <ul class="checklist">
+        <li>להחזיר את כולם ליסודות: קבלת לקוח, זרימת הזמנות, קופה, מסירה וניקיון קריטי בלבד.</li>
+        <li>להחליט מה דחוף עכשיו ומה יכול להמתין לאחר שהגל יירגע.</li>
+        <li>להחזיק קשר עין עם הבריסטה והפס כדי למנוע צווארי בקבוק.</li>
+        <li>בזמן עומס - לעבוד לפי סדרי העדיפויות של <a href="#iumos" style="color:#f5c518;">תיעדוף בזמן עומס 🚀</a>.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🔁 סיום משמרת והעברה נכונה</h3>
+      <ul class="checklist">
+        <li>לעבור על המשימות שצריכות להיסגר לפני החלפת משמרת או סיום יום.</li>
+        <li>לוודא שהמשמרת הבאה מקבלת חנות מסודרת, מתודרכת וללא חוסרים מפתיעים.</li>
+        <li>להעביר דגשים ברורים: חוסרים, תקלות, מוצרים לקראת תוקף, משימות שלא הושלמו ורגישויות בצוות.</li>
+        <li>לפני שחרור עובדים - לוודא שהכל בוצע בפועל ולא רק "נאמר שבוצע".</li>
+      </ul>
+    </div>
+    <div class="mantra" style="border-right-color: #22c55e; background: rgba(34,197,94,0.07); margin-top: 20px; font-style: normal;">
+      ✅ <strong>עיקרון לאחמ"ש:</strong> אם אתה רואה משהו שדורש טיפול - זה כבר באחריותך. או שאתה מטפל, או שאתה מוודא שמישהו מטפל. אין שטח אפור בניהול משמרת.
+    </div>
+    <div class="mantra" style="border-right-color: #a78bfa; background: rgba(167,139,250,0.07); margin-top: 12px; font-style: normal;">
+      💜 <strong>זכרו:</strong> משמרת טובה מורגשת בשקט שלה. כשהאחמ"ש מחזיק קו ברור, כל הצוות נושם טוב יותר - וגם הלקוח מרגיש את זה.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- תיעדוף בזמן עומס -->
+  <div class="section" id="iumos">
+    <h2>🚀 תיעדוף בזמן עומס</h2>
+    <div class="mantra">
+      בזמן עומס לא מנסים לעשות הכל - עושים את הדברים הנכונים בסדר הנכון. המטרה היא לשמור על קצב, חיוך ושליטה. הלקוח צריך להרגיש שיש מי שמחזיק את החנות, גם כשהיא מלאה.
+    </div>
+    <div class="sub-section">
+      <h3>1️⃣ קודם כל - קבלת לקוח וזרימה</h3>
+      <ul class="checklist">
+        <li>ליצור קשר עין, לברך ולהראות לאורח שראינו אותו - גם אם יש תור.</li>
+        <li>לשמור על תור ברור, נעים ומנוהל - בלי תחושת כאוס בקופה.</li>
+        <li>להחזיק קצב עבודה יעיל, אבל לא לאבד אדיבות, סבלנות ונוכחות.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>2️⃣ לשמור על העמדות הקריטיות פעילות</h3>
+      <ul class="checklist">
+        <li>קופה, בריסטה, פס ומסירת מוצרים קודמים לכל משימה אחרת.</li>
+        <li>אם יש זמן ביניים של כמה שניות - מבצעים רק השלמות קריטיות ממלאי פס.</li>
+        <li>לא פותחים משימות עומק או ניקיונות כבדים בזמן שהחנות בשיא.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>3️⃣ לחלק תפקידים פשוט וברור</h3>
+      <ul class="checklist">
+        <li>אדם אחד מוביל קופה, אדם אחד מחזיק פס/הגשות, אדם אחד נותן גב לבריסטה או לרחבה - לפי הצורך.</li>
+        <li>לא להעמיס על כולם הכל; לכל אחד יש פוקוס ברור.</li>
+        <li>אחמ"ש מזיז אנשים בזמן אמת לפי העומס - בלי להסס ובלי להסביר יותר מדי.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>4️⃣ מה נדחה לאחרי העומס</h3>
+      <ul class="checklist">
+        <li>ניקיונות לא דחופים, סידורים אסתטיים עמוקים, קיפולי אריזות והשלמות שאינן קריטיות.</li>
+        <li>טיפול ארוך במחסן או משימות שאינן משפיעות עכשיו על הלקוח.</li>
+        <li>כל משימה שלא תורמת מיידית לשירות, קצב או זמינות מוצר - ממתינה.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>5️⃣ מינימום ניקיון שחייב להישמר גם בעומס</h3>
+      <ul class="checklist">
+        <li>קופה ועמדת לקוח נשארות נעימות, נקיות וללא לכלוך בולט.</li>
+        <li>מנגבים נקודתית מה שמפריע לשירות או נראה לעין הלקוח.</li>
+        <li>לא נותנים לפס להתרוקן או לעמדה להיראות מוזנחת.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>6️⃣ אחרי שהגל נרגע</h3>
+      <ul class="checklist">
+        <li>לעשות איפוס מהיר של החנות: פס, קופה, בריסטה, ויטרינות ורחבה.</li>
+        <li>להשלים חוסרים שנפתחו בזמן הלחץ.</li>
+        <li>לחזור לסטנדרט השירות המלא של <a href="#service" style="color:#f5c518;">שירות לקוחות 💛</a> ולחלוקת עבודה רגועה.</li>
+      </ul>
+    </div>
+    <div class="mantra" style="border-right-color: #f97316; background: rgba(249,115,22,0.07); margin-top: 20px; font-style: normal;">
+      🎯 <strong>מילת מפתח בזמן עומס:</strong> פשטות. לא מסתבכים, לא רצים סתם, לא מתפזרים. עובדים קצר, ברור, אחיד.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- עובד ניקיון - יומי -->
+  <div class="section" id="nikuyon-yomi">
+    <h2>🧽 עובד ניקיון - משימות יומיות</h2>
+    <div class="mantra">
+      עובד הניקיון הוא עמוד השדרה של האווירה בג'ורנו. לקוח שנכנס לחנות נקייה, מסודרת ומטופחת - מרגיש את זה מיד. זה לא רק ניקיון, זה כבוד למקום ולאנשים שבאים אלינו. כל יום מתחיל ומסתיים עם סטנדרט אחד: נקי, מסודר, מוכן.
+    </div>
+    <div class="sub-section">
+      <h3>🌿 רחבה חיצונית וסביבת החנות</h3>
+      <ul class="checklist">
+        <li>הפעלת מכונת שטיפה בכל היקף החנות ומסביב לכל האדניות.</li>
+        <li>מעבר על כל הצמחייה - הוצאת סיגריות, לכלוך ופסולת מהאדניות.</li>
+        <li>טאטוא יסודי של 2 המסילות: כניסה ראשית ופרגולה.</li>
+        <li>פתיחת שמשיות בהתאם למזג האוויר.</li>
+        <li>ניקוי חיצוני של כל הפחים עם ספריי נירוסטה.</li>
+        <li>ניקוי מסגרת הפרגולה השחורה - למעלה, למטה ופדרי החלונות.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🏠 פנים החנות ואחסון</h3>
+      <ul class="checklist">
+        <li>סידור וניקוי חדר ההקפאה - רצפה, מדפים וסדר כללי.</li>
+        <li>סידור וניקוי המחסן - רצפה פנויה, קרטונים מסודרים.</li>
+        <li>שטיפה יסודית של עגלת הפינויים - פנים וחוץ.</li>
+      </ul>
+    </div>
+    <div class="mantra" style="border-right-color: #a78bfa; background: rgba(167,139,250,0.07); font-style: normal;">
+      💡 <strong>לאחמ"ש:</strong> לוודא שמשימות עובד הניקיון בוצעו לפני שחרורו. אחריות הניקיון היא של כולנו - עובד הניקיון מוביל, הצוות תומך.
+    </div>
+    <div class="sub-section">
+      <h3>📅 משימות נוספות ביום ראשון</h3>
+      <ul class="checklist">
+        <li>סידור ושטיפה יסודית של מחסן השתייה.</li>
+        <li>קבלת סחורות וסידורן במקומן.</li>
+        <li>שטיפה יסודית של חדר ההקפאה.</li>
+        <li>ניקוי פתחי אוורור בתקרת החנות.</li>
+        <li>ניקוי יסודי פנימי וחיצוני של מקררי המחסן.</li>
+        <li>ניקוי הבמה השחורה.</li>
+      </ul>
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- עובד ניקיון - שבועי -->
+  <div class="section" id="nikuyon-shavui">
+    <h2>🗓 עובד ניקיון - משימות שבועיות</h2>
+    <div class="mantra">
+      המשימות השבועיות הן ההשקעה שלנו בתחזוקה לטווח ארוך. כל משימה מתוזמנת לפי עומס העבודה הצפוי באותו יום. אם עובד הניקיון נעדר - המשימה עוברת ליום הסמוך (לפני או אחרי). אין "דילוג" - רק "דחייה".
+    </div>
+    <div class="cleaning-week-grid">
+      <div class="cleaning-day-card">
+        <div class="cleaning-day-header">📅 יום ראשון</div>
+        <div class="cleaning-day-body">
+          <div class="cleaning-tag">✅ כלול במשימות יום ראשון</div>
+          <ul class="checklist">
+            <li>שטיפה יסודית של חדר ההקפאה - רצפה, קירות ומדפים.</li>
+            <li>שטיפה פנימית של כל הפחים בחנות ובחוץ - מים חמים למניעת ריחות.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cleaning-day-card">
+        <div class="cleaning-day-header">📅 יום שני</div>
+        <div class="cleaning-day-body">
+          <div class="cleaning-tag">⏱ משימה בינונית</div>
+          <ul class="checklist">
+            <li>ניקוי פתחי אוורור בתקרת החנות - הסרת אבק ולכלוך מצטבר.</li>
+            <li>ניקוי מנורות הפס - ניגוב יסודי מאבק ושומן.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cleaning-day-card">
+        <div class="cleaning-day-header">📅 יום שלישי</div>
+        <div class="cleaning-day-body">
+          <div class="cleaning-tag">⏱ משימה קצרה</div>
+          <ul class="checklist">
+            <li>ניקוי מבואות הכניסה לחנות עם מכונת שטיפה - כניסה ראשית ומסדרון.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="cleaning-day-card">
+        <div class="cleaning-day-header">📅 יום רביעי</div>
+        <div class="cleaning-day-body">
+          <div class="cleaning-tag">⏱ משימה כבדה - לתזמן בהתאם</div>
+          <ul class="checklist">
+            <li>ניקוי יסודי של תנור האפייה במטבח - פנים, חוץ ומגירת שאריות.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="mantra" style="border-right-color: #f97316; background: rgba(249,115,22,0.07); margin-top: 20px; font-style: normal;">
+      🎯 <strong>לאחמ"ש:</strong> לוודא בסיום כל משמרת שהמשימה השבועית של אותו יום בוצעה. אם עובד הניקיון נעדר - לתאם עם המנהל העברה ליום הסמוך.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- עובד ניקיון - חודשי -->
+  <div class="section" id="nikuyon-hodshi">
+    <h2>📅 עובד ניקיון - משימות חודשיות</h2>
+    <div class="mantra">
+      שלוש משימות חודשיות, שלושה ימים קבועים בחודש. הפיזור מכוון - כדי שלא יהיה עומס ביום אחד וכדי שהחנות תישאר מטופחת לאורך כל החודש. הימים קבועים ומוכרים לכולם - אין תירוצים.
+    </div>
+    <div class="monthly-grid">
+      <div class="monthly-card">
+        <div class="monthly-card-header">
+          <span class="month-badge">📅 ראשון ראשון בחודש</span>
+          <span class="month-title">ניקוי פנימי של מקרר השתייה</span>
+        </div>
+        <div class="monthly-card-body">
+          <ul class="checklist">
+            <li>ריקון מלא של מקרר השתייה - הוצאת כל המוצרים.</li>
+            <li>ניקוי יסודי פנימי: מדפים, דפנות ורצפת המקרר.</li>
+            <li>ניגוב יסודי לפני החזרת המוצרים - מסודרים לפי סוג ותוקף.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="monthly-card">
+        <div class="monthly-card-header">
+          <span class="month-badge">📅 שני שני בחודש</span>
+          <span class="month-title">ניקוי פתחי אוורור - מקררי מעדניה ומוסים</span>
+        </div>
+        <div class="monthly-card-body">
+          <ul class="checklist">
+            <li>ניקוי פתחי האוורור של מקרר המעדניה - הסרת אבק ושומן מצטבר.</li>
+            <li>ניקוי פתחי האוורור של מקפיא המוסים - וידוא זרימת אוויר תקינה.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="monthly-card">
+        <div class="monthly-card-header">
+          <span class="month-badge">📅 חמישי אחרון בחודש</span>
+          <span class="month-title">טיפול ופינישים באדניות</span>
+        </div>
+        <div class="monthly-card-body">
+          <ul class="checklist">
+            <li>בדיקת כל האדניות - זיהוי שריטות, קילופים ואזורים הדורשים טיפול.</li>
+            <li>צביעה ופינישים לבנים באדניות - שיראו נקיות, מטופחות ואחידות.</li>
+            <li>וידוא שכל האדניות נראות מוכנות לחודש הבא.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="mantra" style="border-right-color: #22c55e; background: rgba(34,197,94,0.07); margin-top: 20px; font-style: normal;">
+      ✅ <strong>תזכורת לאחמ"ש:</strong> לסמן ביומן את 3 הימים הקבועים בתחילת כל חודש. המשימות החודשיות הן לא "אם יש זמן" - הן חלק מהתחזוקה השוטפת של ג'ורנו.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- נהלים -->
+  <div class="section" id="nahagim">
+    <h2>📋 נהלים וכללי התנהגות</h2>
+    <div class="mantra">
+      הסטנדרט של ג'ורנו לא נבנה רק מהמאפים, מהקפה או מהעיצוב - הוא נבנה מההתנהגות היומיומית שלנו. איך אנחנו מגיעים, איך אנחנו מדברים, איך אנחנו נראים ואיך אנחנו שומרים על המקום. מקצועיות היא הרגל, לא מצב רוח.
+    </div>
+    <div class="sub-section">
+      <h3>⏰ הגעה, נראות ועמידה בסטנדרט</h3>
+      <ul class="checklist">
+        <li>מגיעים בזמן, מוכנים לעבודה ולא "נכנסים למשמרת תוך כדי".</li>
+        <li>לבוש מסודר, נקי ומכבד את המקום מהדקה הראשונה.</li>
+        <li>נראות אישית נקייה ואסתטית לאורך כל המשמרת.</li>
+        <li>אם יש חריגה, איחור או בעיה - מעדכנים מראש ולא בדקה האחרונה.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>📱 התנהלות אישית בזמן עבודה</h3>
+      <ul class="checklist">
+        <li>הטלפון האישי לא חלק מהעמדה ולא חלק מהשירות.</li>
+        <li>לא אוכלים, לא שותים ולא מתעסקים בעניינים אישיים מול אורחים.</li>
+        <li>לא יושבים, לא נמרחים ולא משדרים חוסר חדות בזמן משמרת.</li>
+        <li>אם יש רגע שקט - עוברים אוטומטית למשימת סדר, ניקיון או מלאי פס.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🧼 סדר, ניקיון ואחריות על הסביבה</h3>
+      <ul class="checklist">
+        <li>כל עובד אחראי על האזור שבו הוא עומד - לא משאירים בלגן למישהו אחר.</li>
+        <li>מנקים תוך כדי עבודה ולא רק בסוף.</li>
+        <li>מחזירים כל דבר למקום מיד לאחר שימוש.</li>
+        <li>לא עוברים ליד לכלוך, חוסר או חוסר סדר כאילו זה לא שלנו.</li>
+      </ul>
+    </div>
+    <div class="alert-box">
+      🚨 מחליפים בגדים במחסן בלבד. כביסה מלוכלת - לסל כביסה בלבד!
+    </div>
+    <div class="sub-section">
+      <h3>🗣️ שפה, כבוד ותקשורת בצוות</h3>
+      <ul class="checklist">
+        <li>מדברים אחד לשני בכבוד - גם בלחץ.</li>
+        <li>לא מתווכחים מול לקוחות ולא מתקנים עובדים בצורה שמביכה אותם מול אורח.</li>
+        <li>מעבירים בקשות ודגשים קצר, ברור ונעים.</li>
+        <li>בעיה פותרים מול האחמ"ש או המנהל - לא מול הלקוח ולא באוויר.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🍽️ התנהלות מול מוצר ואורח</h3>
+      <ul class="checklist">
+        <li>עובדים נקי, מדויק ומכבד - כל מוצר שיוצא מייצג את ג'ורנו.</li>
+        <li>לא מוסרים מוצר, צלחת או מגש במראה מרושל.</li>
+        <li>אם לא בטוחים לגבי מוצר, תוקף, רגישויות או הנחיה - שואלים לפני שמוציאים.</li>
+        <li>שומרים על אותו סטנדרט גם באורח הראשון וגם באורח האחרון של היום.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>📣 דיווח, שקיפות ואחריות</h3>
+      <ul class="checklist">
+        <li>מדווחים על חוסר, תקלה, פגם במוצר או בעיית שירות בזמן אמת.</li>
+        <li>לא מסתירים טעויות - מתקנים אותן מהר וממשיכים.</li>
+        <li>כל מי שמסיים משימה מוודא שהיא באמת נסגרה עד הסוף.</li>
+        <li>אם קיבלת אחריות - היא שלך עד שנבדק ונמסר אחרת.</li>
+      </ul>
+    </div>
+    <div class="mantra" style="border-right-color: #22c55e; background: rgba(34,197,94,0.07); margin-top: 20px; font-style: normal;">
+      ✅ <strong>כלל בסיס:</strong> מתנהגים כאילו הבעלים של המקום עומד לידנו - וכאילו כל אורח שמולנו יספר אחר כך איך הרגשנו אותו.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- שירות לקוחות -->
+  <div class="section" id="service">
+    <h2>💛 שירות לקוחות - הסטנדרט של ג'ורנו</h2>
+    <div class="mantra">
+      שירות בג'ורנו הוא לא רק לקחת הזמנה. אנחנו מארחים. הלקוח צריך להרגיש שראו אותו, שמקשיבים לו ושנעים לו להיות כאן. אנחנו מהירים, אבל לא קרים. מקצועיים, אבל לא רובוטיים. החוויה מתחילה עוד לפני הביס הראשון.
+    </div>
+    <div class="sub-section">
+      <h3>👋 קבלת אורח</h3>
+      <ul class="checklist">
+        <li>לברך כל אורח שנכנס - גם אם יש עומס וגם אם אנחנו באמצע פעולה.</li>
+        <li>ליצור קשר עין ולשדר נוכחות: ראינו אותך, אתה לא "מחכה באוויר".</li>
+        <li>לכוון, להסביר ולעזור לאורח להתמצא בחנות אם צריך.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🧠 הקשבה, התאמה והכוונה</h3>
+      <ul class="checklist">
+        <li>להקשיב באמת לפני שמציעים - להבין אם האורח מחפש משהו מתוק, מלוח, קליל, מפנק או מהיר.</li>
+        <li>להכיר את המוצרים מספיק טוב כדי להמליץ בביטחון ובפשטות.</li>
+        <li>אם יש שאלה על מוצר - עונים ברור. אם לא בטוחים, בודקים ולא מאלתרים.</li>
+        <li>לזכור שיש אורחים שצריכים הכוונה מהירה ויש כאלה שצריכים רגע של יחס - להתאים את עצמנו אליהם.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>✨ איך מגישים את המוצר</h3>
+      <ul class="checklist">
+        <li>כל מוצר יוצא נקי, מסודר ומוגש בכבוד - שקית, צלחת, מגש או קופסה לפי הצורך.</li>
+        <li>בודקים שהעמדה שממנה מגישים נראית טוב, נקייה ומוכנה.</li>
+        <li>מגישים במהירות, אבל לא בזריקה ולא בחוסר תשומת לב.</li>
+        <li>שומרים על קו שירות חם גם בפעולה הקטנה ביותר.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🗨️ שיח עם אורח</h3>
+      <ul class="checklist">
+        <li>מדברים בנעימות, בקצרה ובביטחון.</li>
+        <li>לא עונים ביובש, לא מצביעים מרחוק ולא משאירים אורח בלי מענה.</li>
+        <li>אם יש עיכוב, מסבירים בקצרה ונותנים תחושת שליטה.</li>
+        <li>גם כשעמוס - שומרים על טון רגוע ומכבד.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🧯 טיפול בטעות, חוסר או תלונה</h3>
+      <ul class="checklist">
+        <li>קודם כל מקשיבים ולא מתגוננים.</li>
+        <li>לוקחים אחריות על החוויה של האורח, גם אם הטעות לא התחילה אצלנו אישית.</li>
+        <li>מערבים אחמ"ש בזמן כשצריך - לא נותנים לתסכול להצטבר.</li>
+        <li>פותרים מהר, בנועם ובכבוד - בלי ויכוח מיותר.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🚀 שירות בזמן עומס</h3>
+      <ul class="checklist">
+        <li>בזמן עומס שומרים קודם כל על יחס, קשר עין ותור מנוהל.</li>
+        <li>לא מקריבים את האדיבות בשם המהירות.</li>
+        <li>עובדים לפי סדרי העדיפויות של <a href="#iumos" style="color:#f5c518;">תיעדוף בזמן עומס 🚀</a>.</li>
+      </ul>
+    </div>
+    <div class="sub-section">
+      <h3>🌟 סיום אינטראקציה</h3>
+      <ul class="checklist">
+        <li>לסיים כל שירות בתחושה נעימה: תודה, חיוך, קשר עין או איחול קטן לפי הסיטואציה.</li>
+        <li>להשאיר את האורח עם תחושה שהיה נעים, קל וטוב להיות אצלנו.</li>
+        <li>לזכור: הלקוח אולי לא יזכור כל מילה - אבל הוא תמיד יזכור איך גרמנו לו להרגיש.</li>
+      </ul>
+    </div>
+    <div class="mantra" style="border-right-color: #a78bfa; background: rgba(167,139,250,0.07); margin-top: 20px; font-style: normal;">
+      💜 <strong>הסטנדרט שלנו:</strong> שירות מצוין הוא שילוב של דיוק, חום, קצב ונוכחות. כשאנחנו עושים את זה נכון - הלקוח לא רק קונה, הוא רוצה לחזור.
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <!-- מתלמדים לאחמ"ש -->
+  <div class="section" id="mitlmadim">
+    <h2>🧑‍💼 מתלמדים לאחמ"ש</h2>
+    <div class="mantra">
+      <strong>ברוכים הבאים לתהליך ההכשרה לאחמ"ש של ג'ורנו.</strong><br/>
+      ארבע משמרות. ארבעה שלבים. מהמשמרת הראשונה ועד לעמידה עצמאית בקופה - כל שלב בנוי על הקודם לו. <strong>החמרה מהמשמרת הראשונה על איחורים ולבוש!!</strong>
+    </div>
+    <div class="training-steps">
+
+      <div class="training-card">
+        <div class="training-card-header">
+          <div class="training-step-num">1</div>
+          <div>
+            <div class="training-card-title">משמרת ראשונה - היכרות עם החנות</div>
+            <div class="training-card-subtitle">ללמוד לראות את החנות כמו אחמ"ש</div>
+          </div>
+        </div>
+        <div class="training-card-body">
+          <div class="sub-section" style="margin-top:0;">
+            <h3>🌿 רחבה חיצונית ופתיחה</h3>
+            <ul class="checklist">
+              <li>מעבר על נהלים ברורים בחוץ: שני כיסאות לכיוון הים, שולחנות לפי סדר קבוע.</li>
+              <li>טיטוא הרחבה בצורה יסודית - עלים ופסולת, ניקיון מסביב לפחי עירייה.</li>
+              <li>שפריצר נייר על כל השולחנות ולא מחוצה לו.</li>
+              <li>מילוי עמדת סוכרים.</li>
+              <li>זריקת עיתונים ישנים ופתיחת עיתונים חדשים.</li>
+              <li>פתיחת הגג של הפרגולה.</li>
+            </ul>
+          </div>
+          <div class="sub-section">
+            <h3>🏪 חנות ותצוגה</h3>
+            <ul class="checklist">
+              <li>סיור קצר בחנות: הסבר כללי על המוצרים בחנות וסיור קצר.</li>
+              <li>מעבר על כל המאפים המתוקים והמלוחים - שמות, מחירים, מפיות, כוסות וקופסאות, עם היכרות ראשונית עם מלאי הפס.</li>
+            </ul>
+          </div>
+          <div class="sub-section">
+            <h3>💼 קופה ושירות</h3>
+            <ul class="checklist">
+              <li>עמידה בקופה מהצד ומאזין, מסתכל ואורח.</li>
+              <li>לאחר מכן המתלמד לוקח חלק שותף מהשירות והאירוח בקופה, מתמקד בהקשבה וארוחת מאפים ועוגות.</li>
+              <li>מעבר עמוד על כל המאפים המתוקים והמלוחים, פירוט מדויק ושאלות נפוצות בקרב האורחים לגבי המאפים.</li>
+            </ul>
+          </div>
+          <div class="training-note">
+            💡 <strong>מטרת המשמרת:</strong> להכיר את החנות, את המוצרים ואת הסטנדרט של ג'ורנו. לא לנהל - לצפות, לשאול ולהבין.
+          </div>
+        </div>
+      </div>
+
+      <div class="training-card">
+        <div class="training-card-header">
+          <div class="training-step-num">2</div>
+          <div>
+            <div class="training-card-title">משמרת שנייה - ויטרינה, מחירים וניקיון</div>
+            <div class="training-card-subtitle">להציג, לתמחר ולשמור על הסטנדרט</div>
+          </div>
+        </div>
+        <div class="training-card-body">
+          <div class="sub-section" style="margin-top:0;">
+            <h3>🍰 ויטרינה ותצוגה</h3>
+            <ul class="checklist">
+              <li>סידור נכון של המאפים על הויטרינה - להציג את הסדר הקבוע וחשיבותו.</li>
+              <li>סידור נכון של המאפים על הפעמונים, סדר בעגלות.</li>
+              <li>לא לעמוד מאפים אחד על השני, והסבר על השני.</li>
+            </ul>
+          </div>
+          <div class="sub-section">
+            <h3>🏪 חנות ומחירים</h3>
+            <ul class="checklist">
+              <li>מעבר על מחירי החנות: כריכים, סלטים, מאפים, עוגות ולחמים.</li>
+            </ul>
+          </div>
+          <div class="sub-section">
+            <h3>🧹 ניקיון ותחזוקה</h3>
+            <ul class="checklist">
+              <li>לאחר סיום סידור ויטרינת מאפים - סדר בעגלות, זריקת נירות אפייה, צמצום ומצום מגשים ריקים למדף התחתון בעגלה. רק לאחר שזה מבוצע מכניסים את העגלה למקומה.</li>
+              <li>דגשים על סדר וניקיון החנות: בדיקה והחלפת מים בכל הפרחים, ניקיון שולחן תצוגה, ניקיון מדפיי עוגיות, שפריצר נייר על המראות, ניקיון אבק ממנורות ויטרינת פטיסרי, סמרטוס בחנות כל שעה.</li>
+            </ul>
+          </div>
+          <div class="sub-section">
+            <h3>💼 קופה ושירות</h3>
+            <ul class="checklist">
+              <li>לאחר מכן המתלמד לוקח חלק שותף מהשירות והאירוח בקופה, מתמקד בהקשבה וארוחת מאפים ועוגות.</li>
+            </ul>
+          </div>
+          <div class="training-note">
+            💡 <strong>מטרת המשמרת:</strong> להבין את הסטנדרט הויזואלי של ג'ורנו - ויטרינה מסודרת, מחירים שגורים, ניקיון שוטף.
+          </div>
+        </div>
+      </div>
+
+      <div class="training-card">
+        <div class="training-card-header">
+          <div class="training-step-num">3</div>
+          <div>
+            <div class="training-card-title">משמרת שלישית - פתיחה עצמאית ולחמים</div>
+            <div class="training-card-subtitle">לנהל פתיחה, לבצע לחמים ולעמוד בקופה</div>
+          </div>
+        </div>
+        <div class="training-card-body">
+          <div class="sub-section" style="margin-top:0;">
+            <h3>🌅 פתיחה עצמאית</h3>
+            <ul class="checklist">
+              <li>פתיחה לבד של הבחוץ על פי שתי התלמדויות הקודמות.</li>
+              <li>עמידה בקופה בליווי אחמ"ש - חייך וייחס מהרגע הראשון שהאורח נכנס לחנות, הענברת תחושה שהגעת ואנחנו כאן לעזור!</li>
+              <li>הגשת המאפה בליווי מגבון ומגון אם זה בשקית. הקלדה בקופה ללא כפפה!</li>
+            </ul>
+          </div>
+          <div class="sub-section">
+            <h3>🍞 לחמים ומלאים</h3>
+            <ul class="checklist">
+              <li>ביצוע לחמים ומלאים תחת צ'קליסט מותאם, בליווי אחמ"ש.</li>
+              <li>מעבר על כל הפטיסרי.</li>
+              <li>מוצרים ללא גלוטן / טבעוניים / ללא סוכר.</li>
+            </ul>
+          </div>
+          <div class="training-note">
+            💡 <strong>מטרת המשמרת:</strong> לבצע פתיחה עצמאית, לעמוד בקופה ולהכיר את כל מגוון המוצרים לעומק - כולל מוצרים ייחודיים.
+          </div>
+        </div>
+      </div>
+
+      <div class="training-card">
+        <div class="training-card-header">
+          <div class="training-step-num">4</div>
+          <div>
+            <div class="training-card-title">משמרת רביעית - בחינה מסכמת</div>
+            <div class="training-card-subtitle">מבחן מעשי על כל מה שנלמד</div>
+          </div>
+        </div>
+        <div class="training-card-body">
+          <div class="sub-section" style="margin-top:0;">
+            <h3>📋 מבחן מסכם</h3>
+            <ul class="checklist">
+              <li>מבחנים לגבי כל הנושאים שנגענו בהם בשלוש ההתלמדויות הקודמות: כריכים, לחמים, מאפים, סלטים, פטיסרי ומוצרי החנות.</li>
+              <li>פתיחת הבחוץ וסידור מאפים נכון על הפעמונים.</li>
+              <li>הסבר כללי על המוצרים ושירות אדיב לאורח.</li>
+            </ul>
+          </div>
+          <div class="training-note" style="border-color: rgba(245,197,24,0.4); background: rgba(245,197,24,0.05);">
+            🌟 <strong>לאחמ"ש:</strong> המשמרת הרביעית היא מבחן - לא עוד הדרכה. המתלמד אמור לבצע הכל עצמאית. תפקידכם לבחון, לא ללמד.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="feedback-box">
+      <h3>✍️ חוות דעת אחמ"ש לאחר סיום ארבעת ההתלמדויות</h3>
+      <p style="font-size:0.85rem; color:#aaa; margin-bottom:12px;">שם המתלמד + שם האחמ"ש:</p>
+      <div class="feedback-lines">
+        <div class="feedback-line">_____________________________________________</div>
+        <div class="feedback-line">_____________________________________________</div>
+        <div class="feedback-line">_____________________________________________</div>
+        <div class="feedback-line">_____________________________________________</div>
+      </div>
+    </div>
+    <a class="back-to-top" href="#top">↑ חזרה לתוכן עניינים</a>
+  </div>
+
+  <footer>Jorno © 2025 - לשימוש פנימי בלבד | קובץ אחמ"שים</footer>
+</div>
+</body>
+</html>
